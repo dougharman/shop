@@ -1,0 +1,225 @@
+<div class="row col-sm-12 col-md-12">
+  <div class="row" style="width: 100%; height: 250px; overflow: scroll;">
+
+<!-- This is Handsontable v0.12.2 from Handsontable.com -->
+<!-- The forked file is in the main directory; I copied the *js
+         and *css into the app/assets folders -->
+<!-- Re dependency ZeroClipboard: I downloaded the file before I learned -->
+<!-- there is a gem for it.  So, I kept the file and installed the gem -->
+
+
+    <div class="col-sm-12 col-md-12 datatable" id="nextTest" style="margin: auto;">
+
+<!--
+<p class="options">
+  <label><input data-type="table-bordered" type="checkbox"> table-bordered </label>
+  <label><input data-type="table-striped" type="checkbox"> table-striped</label>
+  <label><input data-type="table-hover" type="checkbox"> table-hover</label>
+</p>
+-->
+
+<!-- SCRIPT START -->    
+
+    <script>
+
+    var placeHolders = {
+      "course_id": "ABC ",
+      "course_type": "NASBA",
+      "class_date": "YYYY-MM-DD",
+      "sponsor_name": "ICPAS",
+      "title": "How to",
+      "format": "Class",
+      "subject": "Audit",
+      "hours_earned": "2.0",
+      "price": "25.00"
+      
+    };
+
+    var greenRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+      td.style.backgroundColor = 'green';
+      };
+
+
+    var 
+      $ = function(id) {
+        return document.getElementById('nextTest');
+        },
+      save = $('save'),
+      data = [], 
+      container = document.getElementById('nextTest'),
+      options = document.querySelectorAll('.options input'),
+      table,
+      hot;
+
+    /* SAFETY FEATURE */
+    /* From Handsontable, Appearance: Rendering custom HTML in cells */
+
+    function strip_tags(input, allowed) {
+      // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+      allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+      var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+        commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+      return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+        return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+      });
+    };
+
+
+    var safeHtmlRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+      var escaped = Handsontable.helper.stringify(value);
+      escaped = strip_tags(escaped, '<em><b><strong><a><big>'); //be sure you only allow certain HTML tags to avoid XSS threats (you should also remove unwanted HTML attributes)
+      td.innerHTML = escaped;
+      return td;
+    };
+
+    function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+      // if row contains negative number
+      if (parseInt(value, 10) < 0) {
+        // add class "negative"
+        td.className = 'negative';
+      }
+      if (!value || value === '') {
+        td.style.background = '#EEE';
+      }
+    }
+
+    //maps function to lookup string
+    Handsontable.renderers.registerRenderer('negativeValueRenderer', negativeValueRenderer);
+
+    var hot = new Handsontable(container,
+      {
+        data: [],
+        dataSchema: {course_id: null, course_type: null, class_date: null, sponsor_name: null, title: null, format: null, subject: null, hours_earned: null, price: null},
+        startRows: 25,
+        startCols: 13,
+        currentRowClassName: 'currentRow',
+        currentColClassName: 'currentCol',
+        autoColumnSize: true,
+        autoRowSize: true, 
+        autoWrapCol: true,
+        autoWrapRow: true,
+        rowHeaders: true,
+        colWidths: [50,50,50,50,50,50,50,50,50],
+        colHeaders: ["Course Id", "Course Type", "Class Date", "Sponsor", "Title", "Format", "Subject", "Hrs. Earned", "Price"],
+        stretchH: 'all',
+        maxRows: 25,
+        minRows: 25,
+        minSpareRows: 1,
+        contextMenu: true,
+        contextMenuCopyPaste: {
+            swfPath: "assets/ZeroClipboard.swf"
+          },
+        onSelection: function (row, col, row2, col2) {
+          var meta = this.getCellMeta(row2, col2);
+          if (meta.readOnly) {
+            this.updateSettings({fillHandle: false});
+          }
+          else {
+            this.updateSettings({fillHandle: true});
+          }
+        },
+        cells: function (row, col, prop) {
+          var cellProperties = {};
+          if (row === 26 || this.instance.getData()[row][col] === 'readOnly') {  
+            cellProperties.readOnly = true; //make cell read-only if it is first row or the text reads 'readOnly'
+          }
+          else {
+            cellProperties.renderer = "negativeValueRenderer"; //uses lookup map
+          }
+          return cellProperties;
+        },
+        columns: [
+          {data: "course_id", type: 'text', placeholder: placeHolders.course_id, renderer: safeHtmlRenderer},
+           //'text' is default, you don't actually have to declare it 
+          {data: "course_type", type: 'text', placeholder: placeHolders.course_type, renderer: safeHtmlRenderer},
+          {data: "class_date", type: 'date', placeholder: placeHolders.class_date, renderer: safeHtmlRenderer},    
+          {data: "sponsor_name", type: 'text', placeholder: placeHolders.sponsor_name, renderer: safeHtmlRenderer},
+          {data: "title", type: 'text', placeholder: placeHolders.title, renderer: safeHtmlRenderer},
+          {data: "format", type: 'text', placeholder: placeHolders.title, renderer: safeHtmlRenderer},
+          {data: "subject", type: 'text', placeholder: placeHolders.subject, renderer: safeHtmlRenderer},
+          {data: "hours_earned", type: 'numeric', placeholder: placeHolders.hours_earned, renderer: safeHtmlRenderer},
+          {data: "price", type: 'numeric', placeholder: placeHolders.price, renderer: safeHtmlRenderer},
+         
+          ]
+    });
+
+    
+/* From Handsontable Bootstrap example */
+
+    table = document.querySelector('table');
+  
+    Handsontable.Dom.addClass(table, 'table');
+    
+    for (var i = 0, len = options.length; i < len; i++) {
+      Handsontable.Dom.addEvent(options[i], 'click', function () {
+        if (this.checked) {
+          Handsontable.Dom.addClass(table, this.getAttribute('data-type'))
+        }
+        else {
+          Handsontable.Dom.removeClass(table, this.getAttribute('data-type'))
+        }
+      });
+    }
+
+
+    function bindDumpButton() {
+      Handsontable.Dom.addEvent(document.body, 'click', function (e) {
+  
+        var element = e.target || e.srcElement;
+        
+        if (element.nodeName == "BUTTON" && element.name == 'dump') {
+          var name = element.getAttribute('datadump');
+          var instance = element.getAttribute('datainstance');
+          // var hot should be a string that per juantascon/jquery-handsontable-csv
+          // can be converted to CSV and downloaded (locally) as a CSV file
+          var hot = window[instance];
+          // var data is an array because getData is a Handsontable method that
+          // creates arrays of the table data  
+          var data = hot.getData();
+          console.log('data of ' + name, hot.getData());
+        }
+      })     
+    }
+
+    bindDumpButton(); 
+
+
+/* Code from an example to remove empty rows from upload
+
+   $('rowSelector:empty').each(function(){
+
+      $(this).remove(); 
+    });
+*/
+
+    </script>
+
+<!-- SCRIPT END -->
+
+    </div>
+  </div>
+</div>
+
+<div class="row col-sm-12 col-md-12 form-inline text-center">
+  <div class="col-sm-12 col-md-12" style="float: left;">
+    <div class="col-sm-4 col-md-4" ></div>
+    <div class="col-sm-4 col-md-4" >
+      <h5>
+        <button id="hotBtn" class="btn" name="dump" datadump="#nextTest" datainstance="hot" title="USER: Load CPE Credits Earned">USER: Load CPE Credits Earned
+        </button>
+      </h5>
+    </div>
+    <div class="col-sm-4 col-md-4" ></div>
+  </div>
+</div>
+
+<div>
+  <textarea style="width: 200px; height: 200px;" class="handsontableInput" id="test_box"></textarea>
+</div>
+
+<div class="row col-sm-12 col-md-12" style="margin-bottom: 15px"></div>
+
+
+
