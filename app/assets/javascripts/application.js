@@ -19,7 +19,7 @@
 //= require_tree .
 
 /* Chained Selects Plugin for jQuery */
-/* For jquery.chained.remote.js 
+/* For jquery.chained.remote.js */
 
 $(document).ready(function() {
   $(".description").remoteChained({
@@ -48,12 +48,12 @@ data = [
     ]
 
 /* HANDSONTABLE input capture */
-/* This code is working */
+/* This code is working 
 $(document).on('click', '#hotBtn', function() {
   console.log('server_side');
 });
 
-/* This gets the entire DOM */
+/* This gets the entire DOM 
 $.post( "http://localhost:3000/upload_hot_1", function( data ) { 
   console.log(data);  
 }); 
