@@ -119,12 +119,7 @@
       };
 
 
-    var 
-      $ = function(id) {
-        return document.getElementById('nextTest');
-        },
-      save = $('save'),
-      data = [], 
+    var  data = [], 
       container = document.getElementById('nextTest'),
       options = document.querySelectorAll('.options input'),
       table,
@@ -256,7 +251,13 @@
           // var data is an array because getData is a Handsontable method that
           // creates arrays of the table data  
           var data = hot.getData();
-          console.log('data of ' + name, hot.getData());
+          console.log('111data of ' + name, hot.getData());
+          jQuery.post('/upload_hot_2', {
+            data: hot.getData(),
+            authenticity_token: jQuery('meta[name="csrf-token"]').attr('content'),
+          })
+            .then(function() {console.log('then')})
+            .fail(function() {console.log('fail')});
         }
       })     
     }

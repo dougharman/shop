@@ -22,6 +22,7 @@
 /* For jquery.chained.remote.js */
 
 $(document).ready(function() {
+
   $(".description").remoteChained({
       parents: ".name",
       url: "/description",   
@@ -29,7 +30,7 @@ $(document).ready(function() {
       clear: true
   });
   $(".price").remoteChained({
-      parents : ".description",
+      parents : ".description, .name",
       url: "/price",   
       loading: "Loading...",
       clear: true
@@ -38,7 +39,7 @@ $(document).ready(function() {
 });
 
 /* Handsontable */
-/* Test data
+/* Test data */
 
 data = [
       ['', 'Kia', 'Nissan', 'Toyota', 'Honda'],
@@ -48,16 +49,16 @@ data = [
     ]
 
 /* HANDSONTABLE input capture */
-/* This code is working 
+/* This code is working */
 $(document).on('click', '#hotBtn', function() {
   console.log('server_side');
 });
 
-/* This gets the entire DOM 
+/* This gets the entire DOM
 $.post( "http://localhost:3000/upload_hot_1", function( data ) { 
   console.log(data);  
 }); 
-
+*/
 /*  Test code
 $.ajax({
       url: 'json/save.json',

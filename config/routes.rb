@@ -4,15 +4,15 @@ Rails.application.routes.draw do
 
   root to: 'products#index'
 
-  get 'price'         => 'products#index', as: :price
-  get 'description'   => 'products#index', as: :description
+  get 'price'         => 'products#price', as: :price
+  get 'description'   => 'products#description', as: :description
 
   # ADDED 'POST' FOR HANDSONTABLE
   get 'upload_hot_1'        => 'products#upload_hot_1'
-  post 'upload_hot_1'       => 'products#upload_hot_1'
+  post 'upload_hot_1'       => 'products#upload_hot_1_post'
   
   # ADDED 'POST' FOR HANDSONTABLE
-  post 'upload_hot_2'       => 'products#upload_hot_2'
+  post 'upload_hot_2'       => 'products#upload_hot_2_post'
   get 'upload_hot_2'        => 'products#upload_hot_2'
 
   get 'upload_blueimp'      => 'products#upload_blueimp'

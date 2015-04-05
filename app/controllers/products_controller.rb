@@ -7,26 +7,30 @@ class ProductsController < ApplicationController
   def index
     @products = Product.all
 
-    def Product.create(params)
-      @description = params[:description]
-      @price = params[:price]
-    end
+    #def Product.create(params)
+    #  @description = params[:description]
+    #  @price = params[:price]
+    #end
 
+  end
+
+
+  def description
+    descriptions = Product.where("LOWER(name) = ?", params[:name]).pluck(:description)
+    render :json => descriptions.map {|value| [value.downcase, value]}
   end
 
   def price
-#    @price = Product.each {|price| puts "product : #{price}" }
-    
-      
-#    h = Hash.new { |h, k| hash[key] = "product : #{price}" }
-    
- #  h = Hash.new { |hash, key| hash[key] = "price: #{key}" }
+    @products = Product
+      .where("LOWER(name) = ?", params[:name])
+      .where("LOWER(description) = ?", params[:description])
 
+    prices = @products.pluck(:price)
+    render :json => prices.map {|value| [value.to_s, value.to_s]}
   
   end
 
-  def description
-  end
+ 
 
 
 
@@ -102,7 +106,15 @@ class ProductsController < ApplicationController
   def upload_hot_1
   end
 
+  def upload_hot_1_post
+
+  end
+
   def upload_hot_2
+  end
+
+  def upload_hot_2_post
+    render :json => params[:data].values
   end
 
   def upload_blueimp

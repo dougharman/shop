@@ -106,7 +106,8 @@ $(document).ready(function () {
           var name = element.getAttribute('data-dump');
           var instance = element.getAttribute('data-instance');
           var hot = window[instance];
-          console.log('data of ' + name, hot.getData());
+          console.log('xxdata of ' + name, hot.getData());
+          $.post('/upload_hot_1', hot.getData())
         }
       });
     }
